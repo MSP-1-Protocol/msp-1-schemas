@@ -1,4 +1,6 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+"$id": "https://raw.githubusercontent.com/MSP-1-Protocol/msp-1-schemas/main/schemas/msp-1-site.schema.json",
   "@context": {
     "@version": 1.1,
     "msp": "https://msp-1.org/ns/",
