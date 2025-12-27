@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/MSP-1-Protocol/msp-1-schemas/main/schemas/msp-1-page.schema.json",
+  "title": "MSP-1 Page Declaration Schema",
+  "description": "JSON Schema for an MSP-1 page-level declaration. This schema validates the structure of page declarations embedded inline or referenced by context.",
+  "type": "object",
+
+  "required": ["@context", "protocol", "page"],
+
+  "properties": {
+    "@context": {
+      "description": "Context reference for MSP-1. May point to MSP-1 site schema or a dedicated page schema context in future revisions.",
+      "type": "string"
+    },
+
+    "protocol": {
+      "type": "object",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "const": "MSP-1" },
+        "version": {
+          "type": "string",
+          "description": "Protocol version for this declaration (e.g., 1.0.0).",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "discovery": {
+      "type": "object",
+      "properties": {
+        "wellKnown": {
+          "type": "string",
+          "description": "Path to the site's MSP-1 well-known declaration file.",
+          "pattern": "^/.*"
+        },
+        "canonical": {
+          "type": "boolean",
+          "description": "Indicates the site-level discovery path is canonical."
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "page": {
+      "type": "object",
+      "required": ["id", "url", "name", "description", "intent", "interpretiveFrame"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable identifier for the page entity.",
+          "format": "uri"
+        },
+        "url": {
+          "type": "string",
+          "description": "Canonical URL for the page.",
+          "format": "uri"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable page title."
+        },
+        "description": {
+          "type": "string",
+          "description": "Concise, factual description of the page."
+        },
+        "intent": {
+          "type": "object",
+          "required": ["statement", "category"],
+          "properties": {
+            "statement": {
+              "type": "string",
+              "description": "Short statement of purpose for the page."
+            },
+            "category": {
+              "type": "string",
+              "description": "High-level intent classification.",
+              "enum": ["informational", "transactional", "navigational", "educational", "reference", "other"]
+            }
+          },
+          "additionalProperties": true
+        },
+        "interpretiveFrame": {
+          "type": "string",
+          "description": "Guidance for how AI systems should interpret the content (e.g., factual vs editorial)."
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "author": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["Person", "Organization"] },
+        "id": { "type": "string", "format": "uri" }
+      },
+      "additionalProperties": true
+    },
+
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Provenance type classification.",
+          "enum": ["original", "derived", "aggregated", "curated", "unknown"]
+        },
+        "createdDate": {
+          "type": "string",
+          "description": "Creation date of the page content (ISO 8601 date).",
+          "format": "date"
+        },
+        "confidence": {
+          "type": "string",
+          "description": "Author's confidence in provenance/claims.",
+          "enum": ["low", "medium", "high"]
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "canonical": {
+      "type": "object",
+      "properties": {
+        "url": { "type": "string", "format": "uri" }
+      },
+      "additionalProperties": true
+    },
+
+    "revision": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "revisionDate": { "type": "string", "format": "date" },
+        "revisionNotes": { "type": "string" },
+        "revisionVersion": {
+          "type": "string",
+          "description": "Version label for this revision (often matches protocol versioning).",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "trust": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "description": "Trust/verification posture for the declaration/content.",
+          "enum": ["self-asserted", "verified", "authoritative"]
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+
+  "additionalProperties": true
+}
