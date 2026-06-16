@@ -2,14 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/MSP-1-Protocol/msp-1-schemas/main/schemas/msp-1-page.schema.json",
   "title": "MSP-1 Page Declaration Schema",
-  "description": "JSON Schema for an MSP-1 page-level declaration. This schema validates the structure of page declarations embedded inline or referenced by context.",
+  "description": "JSON Schema for an MSP-1 page-level declaration.",
   "type": "object",
 
   "required": ["@context", "protocol", "page"],
 
   "properties": {
     "@context": {
-      "description": "Context reference for MSP-1. May point to MSP-1 site schema or a dedicated page schema context in future revisions.",
       "type": "string"
     },
 
@@ -17,14 +16,16 @@
       "type": "object",
       "required": ["name", "version"],
       "properties": {
-        "name": { "type": "string", "const": "MSP-1" },
+        "name": {
+          "type": "string",
+          "const": "MSP-1"
+        },
         "version": {
           "type": "string",
-          "description": "Protocol version for this declaration (e.g., 1.0.0).",
           "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
 
     "discovery": {
@@ -32,130 +33,265 @@
       "properties": {
         "wellKnown": {
           "type": "string",
-          "description": "Path to the site's MSP-1 well-known declaration file.",
-          "pattern": "^/.*"
+          "const": "/.well-known/msp.json"
         },
         "canonical": {
-          "type": "boolean",
-          "description": "Indicates the site-level discovery path is canonical."
+          "type": "boolean"
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
 
     "page": {
       "type": "object",
-      "required": ["id", "url", "name", "description", "intent", "interpretiveFrame"],
+      "required": ["id", "url", "title"],
       "properties": {
         "id": {
           "type": "string",
-          "description": "Stable identifier for the page entity.",
           "format": "uri"
         },
         "url": {
           "type": "string",
-          "description": "Canonical URL for the page.",
           "format": "uri"
         },
-        "name": {
+        "canonical": {
           "type": "string",
-          "description": "Human-readable page title."
+          "format": "uri"
+        },
+        "title": {
+          "type": "string"
+        },
+        "name": {
+          "type": ["string", "object"]
         },
         "description": {
-          "type": "string",
-          "description": "Concise, factual description of the page."
+          "oneOf": [
+            { "type": "string" },
+            {
+              "type": "object",
+              "required": ["short"],
+              "properties": {
+                "short": { "type": "string" },
+                "long": { "type": "string" },
+                "alt": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "language": { "type": "string" },
+                "lastUpdated": {
+                  "type": "string",
+                  "format": "date"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
         },
         "intent": {
           "type": "object",
-          "required": ["statement", "category"],
+          "required": ["statement"],
           "properties": {
-            "statement": {
-              "type": "string",
-              "description": "Short statement of purpose for the page."
-            },
+            "statement": { "type": "string" },
             "category": {
               "type": "string",
-              "description": "High-level intent classification.",
-              "enum": ["informational", "transactional", "navigational", "educational", "reference", "other"]
+              "enum": [
+                "informational",
+                "transactional",
+                "navigational",
+                "instructional",
+                "persuasive",
+                "creative",
+                "analytical",
+                "warning",
+                "meta"
+              ]
+            },
+            "audience": { "type": "string" },
+            "scope": { "type": "string" },
+            "motivation": { "type": "string" },
+            "interpretiveFrame": { "type": "string" },
+            "priority": {
+              "type": "string",
+              "enum": ["low", "medium", "high", "critical"]
+            },
+            "lastUpdated": {
+              "type": "string",
+              "format": "date"
             }
           },
-          "additionalProperties": true
+          "additionalProperties": false
         },
         "interpretiveFrame": {
-          "type": "string",
-          "description": "Guidance for how AI systems should interpret the content (e.g., factual vs editorial)."
+          "type": "object",
+          "required": ["frame"],
+          "properties": {
+            "frame": { "type": "string" },
+            "category": {
+              "type": "string",
+              "enum": [
+                "informational",
+                "analytical",
+                "creative",
+                "speculative",
+                "instructional",
+                "opinion",
+                "contextual-disclaimer",
+                "safety",
+                "meta",
+                "other"
+              ]
+            },
+            "tone": { "type": "string" },
+            "perspective": { "type": "string" },
+            "scope": { "type": "string" },
+            "appliesToIntent": { "type": "boolean" },
+            "notes": { "type": "string" },
+            "lastUpdated": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          "additionalProperties": false
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
 
     "author": {
       "type": "object",
+      "required": ["name", "type"],
       "properties": {
         "name": { "type": "string" },
-        "type": { "type": "string", "enum": ["Person", "Organization"] },
-        "id": { "type": "string", "format": "uri" }
+        "type": {
+          "type": "string",
+          "enum": ["Person", "Organization"]
+        },
+        "id": {
+          "type": "string",
+          "format": "uri"
+        },
+        "role": { "type": "string" },
+        "email": {
+          "type": "string",
+          "format": "email"
+        }
       },
-      "additionalProperties": true
+      "additionalProperties": false
+    },
+
+    "authority": {
+      "type": "object",
+      "properties": {
+        "subjectId": {
+          "type": "string",
+          "format": "uri"
+        },
+        "scope": { "type": "string" },
+        "level": { "type": "string" },
+        "evidence": { "type": "string" },
+        "jurisdiction": { "type": "string" },
+        "effectiveDate": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "additionalProperties": false
     },
 
     "provenance": {
       "type": "object",
+      "required": ["type"],
       "properties": {
         "type": {
           "type": "string",
-          "description": "Provenance type classification.",
-          "enum": ["original", "derived", "aggregated", "curated", "unknown"]
+          "enum": [
+            "original",
+            "derived",
+            "aggregated",
+            "ai-assisted",
+            "ai-generated"
+          ]
         },
-        "createdDate": {
-          "type": "string",
-          "description": "Creation date of the page content (ISO 8601 date).",
-          "format": "date"
+        "source": { "type": "string" },
+        "contributors": {
+          "type": "array",
+          "items": { "type": "string" }
         },
+        "notes": { "type": "string" },
         "confidence": {
           "type": "string",
-          "description": "Author's confidence in provenance/claims.",
           "enum": ["low", "medium", "high"]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
 
     "canonical": {
       "type": "object",
+      "required": ["url"],
       "properties": {
-        "url": { "type": "string", "format": "uri" }
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "reason": { "type": "string" },
+        "lastReviewed": {
+          "type": "string",
+          "format": "date"
+        },
+        "authority": {
+          "type": "string",
+          "format": "uri"
+        }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
 
     "revision": {
       "type": "object",
+      "required": ["id"],
       "properties": {
         "id": { "type": "string" },
-        "revisionDate": { "type": "string", "format": "date" },
+        "revisionDate": {
+          "type": "string",
+          "format": "date"
+        },
         "revisionNotes": { "type": "string" },
         "revisionVersion": {
           "type": "string",
-          "description": "Version label for this revision (often matches protocol versioning).",
           "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
         }
       },
-      "additionalProperties": true
+      "additionalProperties": false
     },
 
     "trust": {
-      "type": "object",
-      "properties": {
-        "level": {
-          "type": "string",
-          "description": "Trust/verification posture for the declaration/content.",
-          "enum": ["self-asserted", "verified", "authoritative"]
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "string",
+              "enum": ["self-asserted", "verified", "authoritative"]
+            },
+            "scope": { "type": "string" },
+            "provenance": { "type": "string" },
+            "reviewer": { "type": "string" },
+            "confidence": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            }
+          },
+          "additionalProperties": false
         }
-      },
-      "additionalProperties": true
+      ]
     }
   },
 
-  "additionalProperties": true
+  "additionalProperties": false
 }
