@@ -1,43 +1,55 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-"$id": "https://raw.githubusercontent.com/MSP-1-Protocol/msp-1-schemas/main/schemas/msp-1-site.schema.json",
   "@context": {
     "@version": 1.1,
     "msp": "https://msp-1.org/ns/",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
+
     "protocol": "msp:protocol",
     "version": "msp:version",
+
     "site": "msp:site",
     "page": "msp:page",
+
     "id": "@id",
     "type": "@type",
+
+    "title": "msp:title",
     "name": "msp:name",
     "description": "msp:description",
+
     "url": {
       "@id": "msp:url",
       "@type": "@id"
     },
+
     "intent": "msp:intent",
+    "interpretiveFrame": "msp:interpretiveFrame",
+
     "authority": "msp:authority",
     "provenance": "msp:provenance",
-    "interpretiveFrame": "msp:interpretiveFrame",
+    "trust": "msp:trust",
+
     "canonical": {
       "@id": "msp:canonical",
       "@type": "@id"
     },
+
     "discovery": "msp:discovery",
     "wellKnown": {
       "@id": "msp:wellKnown",
       "@type": "@id"
     },
+
     "parent": {
       "@id": "msp:parent",
       "@type": "@id"
     },
+
     "section": {
       "@id": "msp:section",
       "@type": "@id"
     },
+
     "revision": "msp:revision",
     "revisionVersion": "msp:revisionVersion",
     "revisionDate": {
@@ -45,8 +57,7 @@
       "@type": "xsd:dateTime"
     },
     "revisionNotes": "msp:revisionNotes",
-    "compliance": "msp:compliance",
-    "trust": "msp:trust",
+
     "author": "msp:author",
     "reviewer": "msp:reviewer",
     "role": "msp:role"
